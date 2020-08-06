@@ -8,7 +8,6 @@ public class CarReservationCanceled extends AbstractEvent {
     private String resrvCncleDt;
     private String bookerMpno;
     private String procStatus;
-
     // 소스에 직접 추가
     private String carNo;
     private Long rentalAmt;
@@ -69,5 +68,4 @@ public class CarReservationCanceled extends AbstractEvent {
     public void setRentalAmt(Long rentalAmt) {
         this.rentalAmt = rentalAmt;
     }
-
 }

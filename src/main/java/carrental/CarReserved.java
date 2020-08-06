@@ -12,6 +12,7 @@ public class CarReserved extends AbstractEvent {
     private String procStatus;
     private String bookerMpnoNA;
     private String bookerCustNoNA;
+    private Long point;
 
     public Long getId() {
         return id;
@@ -82,5 +83,12 @@ public class CarReserved extends AbstractEvent {
 
     public void setBookerCustNoNa(String bookerCustNoNA) {
         this.bookerCustNoNA = bookerCustNoNA;
+    }
+    public Long getPoint() {
+        return point;
+    }
+
+    public void setPoint(Long point) {
+        this.point = point;
     }
 }

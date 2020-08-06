@@ -26,11 +26,12 @@ public class CarReservation {
     public void onPostPersist(){
         CarReserved carReserved = new CarReserved();
         BeanUtils.copyProperties(this, carReserved);
-        //carReserved.publishAfterCommit();
+        carReserved.publishAfterCommit();
 
         //Following code causes dependency to external APIs
         // it is NOT A GOOD PRACTICE. instead, Event-Policy mapping is recommended.
 
+        // 결제서비스 호출
         carrental.external.Payment payment = new carrental.external.Payment();
         // mappings goes here
         payment.setId(carReserved.getId());
@@ -50,8 +51,17 @@ public class CarReservation {
         ReservationApplication.applicationContext.getBean(carrental.external.PaymentService.class)
                 .payment(payment);
 
-        // 위치 이동 (결제 서비스를 먼저 sync로 처리한 후 예약 저장)
-        carReserved.publishAfterCommit();
+        // 포인트서비스 호출
+        carrental.external.Point point = new carrental.external.Point();
+        // mappings goes here
+        point.setId(carReserved.getId());
+        point.setResrvNo(carReserved.getResrvNo());
+        point.setCarNo(carReserved.getCarNo());
+        //point.setPoint(carReserved.getPoint());
+        point.setPoint(Long.valueOf(500));
+
+        ReservationApplication.applicationContext.getBean(carrental.external.PointService.class)
+            .pointUpdate(point);
 
 
     }
@@ -60,11 +70,12 @@ public class CarReservation {
     public void onPostUpdate(){
         CarReservationCanceled carReservationCanceled = new CarReservationCanceled();
         BeanUtils.copyProperties(this, carReservationCanceled);
-        //carReservationCanceled.publishAfterCommit();
+        carReservationCanceled.publishAfterCommit();
 
         //Following code causes dependency to external APIs
         // it is NOT A GOOD PRACTICE. instead, Event-Policy mapping is recommended.
 
+        // 결제서비스 호출
         carrental.external.Payment payment = new carrental.external.Payment();
         // mappings goes here
         payment.setResrvNo(carReservationCanceled.getResrvNo());
@@ -79,9 +90,17 @@ public class CarReservation {
         ReservationApplication.applicationContext.getBean(carrental.external.PaymentService.class)
                 .paymentCancellation(payment);
 
-        // 위치 이동 (결제취소 서비스를 먼저 sync로 처리한 후 예약 저장)
-        carReservationCanceled.publishAfterCommit();
+        // 포인트서비스 호출
+        carrental.external.Point point = new carrental.external.Point();
+        // mappings goes here
+        point.setId(carReservationCanceled.getId());
+        point.setResrvNo(carReservationCanceled.getResrvNo());
+        point.setCarNo(carReservationCanceled.getCarNo());
+        //point.setPoint(carReserved.getPoint());
+        point.setPoint(Long.valueOf(-500));
 
+        ReservationApplication.applicationContext.getBean(carrental.external.PointService.class)
+            .pointUpdate(point);
 
     }
 
